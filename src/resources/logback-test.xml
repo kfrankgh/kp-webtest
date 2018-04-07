@@ -1,0 +1,41 @@
+<configuration>
+    <!-- Defines the format for log entries. -->
+    <property name="logEntryFormat" value="${HOSTNAME}  %-12date{HH:mm:ss.SSS}  %-5level  %-40logger{40} -> %msg%n"/>
+    <property name="fileEntryFormat" value="${HOSTNAME}  %-12date{HH:mm:ss.SSS}  %-5level %-40logger{40} -> %msg%n"/>
+    <property name="testResults" value="%msg%n"/>
+
+    <!-- Appender specifying the log file that catches everything else. This is typically used to log raw,
+        non-contextual, stack traces with. Useful in troubleshooting -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${logEntryFormat}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Appender specifying the main log for this application. Catches org.ghc and child events -->
+    <appender name="testFileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>build/TestRunResults.log</file>
+        <encoder>
+            <!--<pattern>${fileEntryFormat}</pattern>-->
+            <pattern>${testResults}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <logger name="org.ghc" level="INFO">
+        <appender-ref ref="testFileAppender" />
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.ghc" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <!--<logger name="org.ghc.utils" level="DEBUG" >-->
+    <!--<appender-ref ref="STDOUT"  />-->
+    <!--</logger>-->
+
+    <!--<root level="DEBUG">-->
+    <!--<appender-ref ref="STDOUT"/>-->
+    <!--</root>-->
+</configuration>
